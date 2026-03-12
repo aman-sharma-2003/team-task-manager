@@ -10,14 +10,14 @@ import {
 
 const router = Router();
 
-router.post("/boards", createBoard);
+router.post("/boards", protect, createBoard);
 
-router.get("/boards", getBoards);
+router.get("/boards", protect, getBoards);
 
-router.get("/boards/:id", getBoard);
+router.get("/boards/:id", protect, getBoard);
 
-router.put("/boards/:id", updateBoard);
+router.put("/boards/:id", protect, updateBoard);
 
-router.delete("/boards/:id", deleteBoard);
+router.delete("/boards/:id", protect, deleteBoard);
 
 export default router;

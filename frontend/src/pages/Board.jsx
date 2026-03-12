@@ -11,6 +11,7 @@ import {
   updateBoard,
   deleteBoard,
 } from "../features/boardSlice";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 const Board = () => {
   const { id } = useParams();
@@ -22,7 +23,14 @@ const Board = () => {
 
   const [isEdit, setIsEdit] = useState(false);
 
-  const { register, handleSubmit, reset, control } = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    getValues,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       boardTitle: "",
       columns: [],
@@ -57,6 +65,66 @@ const Board = () => {
     }
   }, [board]);
 
+  const handleDragEnd = (result) => {
+    const { source, destination, type } = result;
+    if (!destination) return;
+
+    const columns = [...getValues("columns")];
+
+    if (type === "COLUMN") {
+      const [removed] = columns.splice(source.index, 1);
+      columns.splice(destination.index, 0, removed);
+
+      reset({
+        boardTitle: getValues("boardTitle"),
+        columns,
+      });
+
+      dispatch(
+        updateBoard({
+          id,
+          data: {
+            title: getValues("boardTitle"),
+            columns,
+          },
+        })
+      );
+
+      return;
+    }
+
+    const sourceColIndex = source.droppableId.split("-")[1];
+    const destColIndex = destination.droppableId.split("-")[1];
+
+    const sourceCards = [...columns[sourceColIndex].cards];
+    const [movedCard] = sourceCards.splice(source.index, 1);
+
+    if (source.droppableId === destination.droppableId) {
+      sourceCards.splice(destination.index, 0, movedCard);
+      columns[sourceColIndex].cards = sourceCards;
+    } else {
+      const destCards = [...columns[destColIndex].cards];
+      destCards.splice(destination.index, 0, movedCard);
+
+      columns[sourceColIndex].cards = sourceCards;
+      columns[destColIndex].cards = destCards;
+    }
+
+    reset({
+      boardTitle: getValues("boardTitle"),
+      columns,
+    });
+    dispatch(
+      updateBoard({
+        id,
+        data: {
+          title: getValues("boardTitle"),
+          columns,
+        },
+      })
+    );
+  };
+
   const submitted = (data) => {
     if (id && isEdit) {
       dispatch(updateBoard({ id, data }));
@@ -78,12 +146,20 @@ const Board = () => {
   return (
     <div className="w-full flex flex-col">
       <form onSubmit={handleSubmit(submitted)}>
-        <div className="h-15 flex items-center justify-between px-6 shadow">
+        <div className="h-15 flex items-center justify-between px-2 sm:px-6 shadow">
           {isEdit ? (
-            <Input placeholder="Board Title" {...register("boardTitle")} />
+            <Input
+              placeholder="Board Title"
+              {...register("boardTitle", {
+                required: true,
+              })}
+            />
           ) : (
-            <h1 className="text-lg font-semibold">
-              {board?.board?.title || "My Board"}
+            <h1
+              onDoubleClick={() => setIsEdit(true)}
+              className="text-lg font-semibold sm:pl-5"
+            >
+              {board?.title || "My Board"}
             </h1>
           )}
 
@@ -113,33 +189,63 @@ const Board = () => {
           </div>
         </div>
         <div className="overflow-x-auto min-h-[calc(100vh-124px)]">
-          <div className="flex gap-5 p-6 min-h-fit">
-            {fields.map((col, index) => (
-              <ColumnCard
-                key={col.id}
-                register={register}
-                isEdit={isEdit}
-                col={col}
-                columnIndex={index}
-                control={control}
-                remove={remove}
-              />
-            ))}
-
-            {isEdit && (
-              <div className="w-70 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => append({ title: "", cards: [{ title: "" }] })}
-                  className="w-70 h-15 rounded-xl border-2 border-dashed border-gray-400 
-                flex items-center justify-center text-gray-600 font-semibold 
-                hover:bg-gray-100 cursor-pointer"
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable
+              droppableId="columns"
+              direction="horizontal"
+              type="COLUMN"
+            >
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="flex gap-5 p-6 min-h-fit"
                 >
-                  + Add another list
-                </button>
-              </div>
-            )}
-          </div>
+                  {fields.map((col, index) => (
+                    <Draggable
+                      key={col.id}
+                      draggableId={String(col.id)}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <ColumnCard
+                            register={register}
+                            isEdit={isEdit}
+                            col={col}
+                            columnIndex={index}
+                            control={control}
+                            remove={remove}
+                            setIsEdit={setIsEdit}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+
+                  {provided.placeholder}
+
+                  {isEdit && (
+                    <div className="w-70 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          append({ title: "", cards: [{ title: "" }] })
+                        }
+                        className="w-70 h-15 rounded-xl border-2 border-dashed border-gray-400 flex items-center justify-center text-gray-600 font-semibold hover:bg-gray-100"
+                      >
+                        + Add another list
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
       </form>
     </div>

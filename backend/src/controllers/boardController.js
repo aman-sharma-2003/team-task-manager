@@ -5,6 +5,7 @@ export const createBoard = async (req, res) => {
     const board = await Board.create({
       title: req.body.boardTitle,
       columns: req.body.columns,
+      userId: req.currentUser._id,
     });
 
     res.status(201).json(board);
@@ -13,9 +14,12 @@ export const createBoard = async (req, res) => {
   }
 };
 
-export const getBoards = async (_, res) => {
+export const getBoards = async (req, res) => {
   try {
-    const boards = await Board.find();
+    const boards = await Board.find({
+      userId: req.currentUser._id,
+    });
+
     res.json(boards);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -24,7 +28,10 @@ export const getBoards = async (_, res) => {
 
 export const getBoard = async (req, res) => {
   try {
-    const board = await Board.findById(req.params.id);
+    const board = await Board.findOne({
+      _id: req.params.id,
+      userId: req.currentUser._id,
+    });
     res.json(board);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -33,10 +40,14 @@ export const getBoard = async (req, res) => {
 
 export const updateBoard = async (req, res) => {
   try {
-    const data = req.body;
-    const updatedBoard = await Board.findByIdAndUpdate(req.params.id, data, {
-      returnDocument: "after",
-    });
+     const updatedBoard = await Board.findOneAndUpdate(
+       {
+         _id: req.params.id,
+         userId: req.currentUser._id,
+       },
+       req.body,
+       { returnDocument: "after" }
+     );
     res.json(updatedBoard);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -45,7 +56,10 @@ export const updateBoard = async (req, res) => {
 
 export const deleteBoard = async (req, res) => {
   try {
-    await Board.findByIdAndDelete(req.params.id);
+    await Board.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.currentUser._id,
+    });
     res.json({ message: "Board Deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });

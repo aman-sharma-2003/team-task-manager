@@ -50,7 +50,9 @@ export const logInController = async (req, res) => {
 };
 
 export const userController = async (req, res) => {
-  res.json(req.currentUser);
+  res.json({
+    user: req.currentUser,
+  });
 };
 
 export const logOutController = (_, res) => {

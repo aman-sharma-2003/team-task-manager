@@ -28,6 +28,12 @@ const boardSchema = new mongoose.Schema(
     background: String,
 
     columns: [columnSchema],
+    
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
+      required: true,
+    },
   },
   {
     timestamps: true,

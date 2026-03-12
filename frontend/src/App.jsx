@@ -16,17 +16,17 @@ import Navbar from "./components/Navbar";
 import Board from "./pages/Board";
 import { setLoading } from "./features/statusSlice";
 
+
 const App = () => {
   const { loggedInUser } = useSelector((state) => state.auth);
   // const { loading } = useSelector((state) => state.status);
   const dispatch = useDispatch();
   const { authChecked } = useSelector((state) => state.auth);
 
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, []);
 
- useEffect(() => {
-   dispatch(checkAuth());
- }, []);
-  
   if (!authChecked) {
     return (
       <div className="text-center mt-40 text-xl font-bold">
@@ -36,7 +36,7 @@ const App = () => {
   }
   return (
     <>
-      <div className="min-h-screen max-h-fit bg-gray-200">
+      <div className="min-h-screen max-h-fit bg-linear-to-br from-gray-100 to-slate-300 select-none">
         <Navbar />
         <Routes>
           <Route element={<AuthLayout />}>
@@ -46,10 +46,12 @@ const App = () => {
             <Route path="forgot-password" element={<ForgotPassword />} />
             <Route path="reset-password/:token" element={<ResetPassword />} />
           </Route>
-          <Route element={<ProtectedRoute />}></Route>
-          <Route path="/home" element={<Home />} />
-          <Route path="/board/:id" element={<Board />} />
-          <Route path="/board/new" element={<Board />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/board/:id" element={<Board />} />
+            <Route path="/board/new" element={<Board />} />
+          </Route>
 
           <Route path="*" element={<NotFound />} />
         </Routes>
