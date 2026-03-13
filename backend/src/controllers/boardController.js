@@ -40,12 +40,17 @@ export const getBoard = async (req, res) => {
 
 export const updateBoard = async (req, res) => {
   try {
+     const updateData = {
+       title: req.body.boardTitle,
+       columns: req.body.columns,
+       userId: req.currentUser._id,
+     };
      const updatedBoard = await Board.findOneAndUpdate(
        {
          _id: req.params.id,
          userId: req.currentUser._id,
        },
-       req.body,
+       updateData,
        { returnDocument: "after" }
      );
     res.json(updatedBoard);

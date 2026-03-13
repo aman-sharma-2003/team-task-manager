@@ -11,7 +11,7 @@ const BoardCard = ({ board }) => {
   return (
     <div
       onClick={handleClick}
-      className="w-73 h-46 rounded-xl overflow-hidden shadow-md cursor-pointer hover:shadow-xl transition"
+      className="w-73 h-46 rounded-xl overflow-hidden shadow-md cursor-pointer hover:shadow-xl hover:border border-blue-400 transition"
     >
 
       <div

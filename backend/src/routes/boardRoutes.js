@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { protect } from "../middlewares/protect.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 import {
   createBoard,
   getBoards,
@@ -10,14 +10,14 @@ import {
 
 const router = Router();
 
-router.post("/boards", protect, createBoard);
+router.post("/boards", authMiddleware, createBoard);
 
-router.get("/boards", protect, getBoards);
+router.get("/boards", authMiddleware, getBoards);
 
-router.get("/boards/:id", protect, getBoard);
+router.get("/boards/:id", authMiddleware, getBoard);
 
-router.put("/boards/:id", protect, updateBoard);
+router.put("/boards/:id", authMiddleware, updateBoard);
 
-router.delete("/boards/:id", protect, deleteBoard);
+router.delete("/boards/:id", authMiddleware, deleteBoard);
 
 export default router;

@@ -34,7 +34,7 @@ const Home = () => {
           onClick={handleCreateBoard}
           className="w-73 h-46 rounded-xl border-2 border-dashed border-gray-400 
           flex items-center justify-center text-gray-600 font-semibold 
-          hover:bg-gray-100 transition cursor-pointer"
+          hover:bg-gray-100 transition hover:shadow-xl cursor-pointer"
         >
           + Create new board
         </button>

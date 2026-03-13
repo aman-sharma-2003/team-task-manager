@@ -50,10 +50,36 @@ export const logInController = async (req, res) => {
 };
 
 export const userController = async (req, res) => {
-  res.json({
-    user: req.currentUser,
-  });
+  try {
+    const user = req.currentUser;
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    const { _id, name, email, phone } = user;
+
+    res.status(200).json({
+      success: true,
+      user: {
+        id: _id,
+        name,
+        email,
+        phone,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user",
+    });
+  }
 };
+// res.json({
+//   user: req.currentUser,
+// });
+// };
 
 export const logOutController = (_, res) => {
   res.clearCookie("token");

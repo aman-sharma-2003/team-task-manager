@@ -22,15 +22,11 @@ const Board = () => {
   const { board } = useSelector((state) => state.board);
 
   const [isEdit, setIsEdit] = useState(false);
+  const [isEditBoardTitle, setIsEditBoardTitle] = useState(false);
+  const [isEditColumnTitle, setIsEditColumnTitle] = useState({});
+  const [isEditTask, setIsEditTask] = useState({});
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    getValues,
-    formState: { errors },
-  } = useForm({
+  const { register, handleSubmit, reset, control, getValues } = useForm({
     defaultValues: {
       boardTitle: "",
       columns: [],
@@ -84,7 +80,7 @@ const Board = () => {
         updateBoard({
           id,
           data: {
-            title: getValues("boardTitle"),
+            boardTitle: getValues("boardTitle"),
             columns,
           },
         })
@@ -118,7 +114,7 @@ const Board = () => {
       updateBoard({
         id,
         data: {
-          title: getValues("boardTitle"),
+          boardTitle: getValues("boardTitle"),
           columns,
         },
       })
@@ -126,9 +122,12 @@ const Board = () => {
   };
 
   const submitted = (data) => {
-    if (id && isEdit) {
+    if (id) {
       dispatch(updateBoard({ id, data }));
       setIsEdit(false);
+      setIsEditBoardTitle(false);
+      setIsEditColumnTitle({});
+      setIsEditTask({});
     }
 
     if (location.pathname === "/board/new" && isEdit) {
@@ -143,32 +142,54 @@ const Board = () => {
     navigate("/home");
   };
 
+  const setLastColumnEdit = () => {
+    const newIndex = fields.length;
+    setIsEditColumnTitle((prev) => ({ ...prev, [newIndex]: true }));
+
+    setIsEditTask((prev) => ({
+      ...prev,
+      [newIndex]: {
+        ...prev[newIndex],
+        0: true,
+      },
+    }));
+  };
+
   return (
     <div className="w-full flex flex-col">
       <form onSubmit={handleSubmit(submitted)}>
-        <div className="h-15 flex items-center justify-between px-2 sm:px-6 shadow">
-          {isEdit ? (
+        <div className="h-13 flex items-center justify-between px-2 sm:px-6 shadow">
+          {isEdit || isEditBoardTitle ? (
             <Input
               placeholder="Board Title"
+              className="text-lg font-semibold sm:ml-5 px-2 py-1 bg-gray-50 focus:outline focus:outline-blue-300 rounded-md focus:bg-white"
               {...register("boardTitle", {
                 required: true,
+                setValueAs: (v) => v.trim(),
               })}
             />
           ) : (
             <h1
-              onDoubleClick={() => setIsEdit(true)}
-              className="text-lg font-semibold sm:pl-5"
+              onDoubleClick={() => {
+                setIsEditBoardTitle(true);
+              }}
+              className="text-lg font-semibold px-2 py-1 rounded-md cursor-pointer sm:ml-5 hover:bg-gray-200"
             >
               {board?.title || "My Board"}
             </h1>
           )}
 
           <div className="flex flex-row gap-3">
-            <Button type="submit" className="max-w-20 px-2 py-1">
-              Save
-            </Button>
+            {(isEdit ||
+              isEditBoardTitle ||
+              JSON.stringify(isEditColumnTitle) != "{}" ||
+              JSON.stringify(isEditTask) != "{}") && (
+              <Button type="submit" className="max-w-20 px-2 py-1">
+                Save
+              </Button>
+            )}
 
-            {id && !isEdit && (
+            {/* {id && !isEdit && (
               <Button
                 type="button"
                 onClick={() => setIsEdit(true)}
@@ -176,7 +197,7 @@ const Board = () => {
               >
                 Edit
               </Button>
-            )}
+            )} */}
             {id && !isEdit && (
               <Button
                 type="button"
@@ -221,6 +242,10 @@ const Board = () => {
                             control={control}
                             remove={remove}
                             setIsEdit={setIsEdit}
+                            isEditColumnTitle={isEditColumnTitle}
+                            setIsEditColumnTitle={setIsEditColumnTitle}
+                            isEditTask={isEditTask}
+                            setIsEditTask={setIsEditTask}
                           />
                         </div>
                       )}
@@ -229,19 +254,18 @@ const Board = () => {
 
                   {provided.placeholder}
 
-                  {isEdit && (
-                    <div className="w-70 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          append({ title: "", cards: [{ title: "" }] })
-                        }
-                        className="w-70 h-15 rounded-xl border-2 border-dashed border-gray-400 flex items-center justify-center text-gray-600 font-semibold hover:bg-gray-100"
-                      >
-                        + Add another list
-                      </button>
-                    </div>
-                  )}
+                  <div className="w-70 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        append({ title: "", cards: [{ title: "" }] });
+                        setLastColumnEdit();
+                      }}
+                      className="w-70 h-15 rounded-xl border-2 cursor-pointer border-dashed border-gray-400 flex items-center justify-center text-gray-600 font-semibold hover:bg-gray-100 hover:shadow-xl"
+                    >
+                      + Add another list
+                    </button>
+                  </div>
                 </div>
               )}
             </Droppable>

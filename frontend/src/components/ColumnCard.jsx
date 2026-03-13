@@ -10,7 +10,11 @@ export const ColumnCard = ({
   columnIndex,
   control,
   remove,
-  setIsEdit = { setIsEdit },
+  setIsEdit,
+  isEditColumnTitle,
+  setIsEditColumnTitle,
+  isEditTask,
+  setIsEditTask,
 }) => {
   const {
     fields,
@@ -21,15 +25,28 @@ export const ColumnCard = ({
     name: `columns.${columnIndex}.cards`,
   });
 
+  const setLastCardEdit = () => {
+    const newIndex = fields.length;
+    setIsEditTask((prev) => ({
+      ...prev,
+      [columnIndex]: {
+        ...prev[columnIndex],
+        [newIndex]: true,
+      },
+    }));
+  };
+
   return (
-    <div className="w-70 bg-gray-100 rounded-xl p-3 shrink-0 shadow-md hover:shadow-lg h-fit">
+    <div className="w-70 bg-gray-100 border border-gray-300 rounded-xl p-3 shrink-0 shadow-md hover:shadow-lg h-fit  hover:border-blue-300 focus-within:border-blue-300 ">
       <div className="flex justify-between items-center mb-3">
-        {isEdit ? (
-          <div className="flex flex-row gap-5">
+        {isEdit || isEditColumnTitle[columnIndex] ? (
+          <div className="flex flex-row gap-2 text-[17px] font-semibold text-gray-700">
             <Input
               placeholder="Column Title"
+              className="focus:outline-[0.5px] bg-gray-50 focus:bg-white border-[0.5px] border-gray-300 shadow-sm focus:outline-blue-300 px-2 py-0.5 rounded-md "
               {...register(`columns.${columnIndex}.title`, {
                 required: true,
+                setValueAs: (v) => v.trim(),
               })}
             />
             <button
@@ -41,8 +58,13 @@ export const ColumnCard = ({
           </div>
         ) : (
           <h2
-            onDoubleClick={() => setIsEdit(true)}
-            className="font-semibold text-gray-700"
+            onDoubleClick={() => {
+              setIsEditColumnTitle((prev) => ({
+                ...prev,
+                [columnIndex]: true,
+              }));
+            }}
+            className=" text-[17px] font-semibold text-gray-700 hover:cursor-pointer hover:bg-gray-200 px-2 py-0.5 rounded-md"
           >
             {col.title}
           </h2>
@@ -69,15 +91,16 @@ export const ColumnCard = ({
                     {...provided.dragHandleProps}
                     className="rounded-lg shadow-sm"
                   >
-                    {isEdit ? (
-                      <div className="flex flex-row gap-2 ">
+                    {isEdit || isEditTask[columnIndex]?.[index] ? (
+                      <div className="flex flex-row gap-1 border-[0.5px] border-gray-300 focus:border-blue-300  hover:border-blue-300 rounded-lg focus-within:border-blue-300 bg-gray-50 focus-within:bg-white">
                         <Input
-                          className="w-56 h-9 px-2 focus:border rounded-lg"
+                          className="w-56 h-9 pl-2 pr-1 focus:outline-none "
                           placeholder="Task"
                           {...register(
                             `columns.${columnIndex}.cards.${index}.title`,
                             {
                               required: true,
+                              setValueAs: (v) => v.trim(),
                             }
                           )}
                         />
@@ -90,8 +113,16 @@ export const ColumnCard = ({
                       </div>
                     ) : (
                       <div
-                        onDoubleClick={() => setIsEdit(true)}
-                        className="bg-white p-2 h-9 rounded-lg shadow-sm"
+                        onDoubleClick={() => {
+                          setIsEditTask((prev) => ({
+                            ...prev,
+                            [columnIndex]: {
+                              ...prev[columnIndex],
+                              [index]: true,
+                            },
+                          }));
+                        }}
+                        className="bg-gray-50 p-2 h-9 rounded-lg shadow-sm hover:border-[0.5px] hover:border-blue-300"
                       >
                         {card.title}
                       </div>
@@ -106,17 +137,18 @@ export const ColumnCard = ({
         )}
       </Droppable>
 
-      {isEdit && (
-        <button
-          type="button"
-          onClick={() => {
-            append({ title: "" });
-          }}
-          className="mt-3 ml-3 font-medium text-gray-600 hover:text-black text-sm"
-        >
-          + Add a card
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => {
+    
+          append({ title: "" });
+          setLastCardEdit();
+        }}
+        className="mt-3 ml-3 font-medium text-gray-600 hover:text-black text-[15px] cursor-pointer px-2 py-1 rounded-md hover:bg-gray-200 flex flex-row gap-1"
+      >
+        <img className="size-4" src="/plus.png" alt="plus" />
+        <p className=" "> Add a card</p>
+      </button>
     </div>
   );
 };
