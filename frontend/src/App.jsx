@@ -58,7 +58,6 @@ const App = () => {
             <Route path="/board/:id" element={<Board />} />
             <Route path="/board/new" element={<Board />} />
           </Route>
-
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

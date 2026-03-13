@@ -3,6 +3,7 @@ import { Input } from "./ui/Input";
 import { useFieldArray } from "react-hook-form";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 
+
 export const ColumnCard = ({
   register,
   isEdit,
@@ -15,6 +16,7 @@ export const ColumnCard = ({
   setIsEditColumnTitle,
   isEditTask,
   setIsEditTask,
+  setOpenTaskModal,
 }) => {
   const {
     fields,
@@ -24,6 +26,8 @@ export const ColumnCard = ({
     control,
     name: `columns.${columnIndex}.cards`,
   });
+
+
 
   const setLastCardEdit = () => {
     const newIndex = fields.length;
@@ -36,6 +40,10 @@ export const ColumnCard = ({
     }));
   };
 
+  const showTaskModal = (columnIndex,index) => {
+    setOpenTaskModal({columnId:columnIndex,taskId:index});
+  };
+  
   return (
     <div className="w-70 bg-gray-100 border border-gray-300 rounded-xl p-3 shrink-0 shadow-md hover:shadow-lg h-fit  hover:border-blue-300 focus-within:border-blue-300 ">
       <div className="flex justify-between items-center mb-3">
@@ -112,19 +120,25 @@ export const ColumnCard = ({
                         </button>
                       </div>
                     ) : (
-                      <div
-                        onDoubleClick={() => {
-                          setIsEditTask((prev) => ({
-                            ...prev,
-                            [columnIndex]: {
-                              ...prev[columnIndex],
-                              [index]: true,
-                            },
-                          }));
-                        }}
-                        className="bg-gray-50 p-2 h-9 rounded-lg shadow-sm hover:border-[0.5px] hover:border-blue-300"
-                      >
-                        {card.title}
+                      <div>
+                        <div
+                          onDoubleClick={() => {
+                            setIsEditTask((prev) => ({
+                              ...prev,
+                              [columnIndex]: {
+                                ...prev[columnIndex],
+                                [index]: true,
+                              },
+                            }));
+                          }}
+                          onClick={() => {
+                            showTaskModal(columnIndex,index);
+                          }}
+                          className="bg-gray-50 p-2 h-9 rounded-lg shadow-sm hover:border-[0.5px] hover:border-blue-300"
+                        >
+                          {card.title}
+                        </div>
+                        
                       </div>
                     )}
                   </div>
@@ -140,7 +154,6 @@ export const ColumnCard = ({
       <button
         type="button"
         onClick={() => {
-    
           append({ title: "" });
           setLastCardEdit();
         }}

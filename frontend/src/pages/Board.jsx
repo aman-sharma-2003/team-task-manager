@@ -12,6 +12,7 @@ import {
   deleteBoard,
 } from "../features/boardSlice";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { TaskCard } from "../components/TaskCard";
 
 const Board = () => {
   const { id } = useParams();
@@ -25,6 +26,7 @@ const Board = () => {
   const [isEditBoardTitle, setIsEditBoardTitle] = useState(false);
   const [isEditColumnTitle, setIsEditColumnTitle] = useState({});
   const [isEditTask, setIsEditTask] = useState({});
+  const [openTaskModal, setOpenTaskModal] = useState(null);
 
   const { register, handleSubmit, reset, control, getValues } = useForm({
     defaultValues: {
@@ -156,8 +158,16 @@ const Board = () => {
   };
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col relative">
       <form onSubmit={handleSubmit(submitted)}>
+        {openTaskModal !== null && (
+          <TaskCard
+            openTaskModal={openTaskModal}
+            setOpenTaskModal={setOpenTaskModal}
+            board={board}
+            register={register}
+          />
+        )}
         <div className="h-13 flex items-center justify-between px-2 sm:px-6 shadow">
           {isEdit || isEditBoardTitle ? (
             <Input
@@ -246,6 +256,7 @@ const Board = () => {
                             setIsEditColumnTitle={setIsEditColumnTitle}
                             isEditTask={isEditTask}
                             setIsEditTask={setIsEditTask}
+                            setOpenTaskModal={setOpenTaskModal}
                           />
                         </div>
                       )}

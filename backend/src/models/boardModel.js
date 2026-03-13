@@ -6,6 +6,8 @@ const taskSchema = new mongoose.Schema({
     required: true,
   },
   description: String,
+  isComplete:Boolean,
+  labels: [String],
 });
 
 const columnSchema = new mongoose.Schema({
