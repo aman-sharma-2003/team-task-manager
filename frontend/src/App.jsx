@@ -14,25 +14,31 @@ import { checkAuth } from "./features/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "./components/Navbar";
 import Board from "./pages/Board";
-import { setLoading } from "./features/statusSlice";
-
+// import { setLoading } from "./features/statusSlice";
+import { useLocation } from "react-router";
 
 const App = () => {
   const { loggedInUser } = useSelector((state) => state.auth);
   // const { loading } = useSelector((state) => state.status);
   const dispatch = useDispatch();
+  const location = useLocation();
   const { authChecked } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    if (location.pathname.startsWith("/reset-password")) {
+      return;
+    }
     dispatch(checkAuth());
   }, []);
 
   if (!authChecked) {
-    return (
-      <div className="text-center mt-40 text-xl font-bold">
-        Checking authentication...
-      </div>
-    );
+    if (!location.pathname.startsWith("/reset-password")) {
+      return (
+        <div className="text-center mt-40 text-xl font-bold">
+          Checking authentication...
+        </div>
+      );
+    }
   }
   return (
     <>

@@ -118,7 +118,13 @@ const authSlice = createSlice({
       })
       .addCase(checkAuth.pending, (state) => {
         state.authChecked = false;
-      });
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.authChecked = true;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.authChecked = true;
+      })
   },
 });
 

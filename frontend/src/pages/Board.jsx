@@ -209,7 +209,7 @@ const Board = () => {
             )}
           </div>
         </div>
-        <div className="overflow-x-auto min-h-[calc(100vh-124px)]">
+        <div className="overflow-x-auto min-h-[calc(100vh-116px)]">
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable
               droppableId="columns"
