@@ -198,7 +198,10 @@ const Board = () => {
               isEditBoardTitle ||
               JSON.stringify(isEditColumnTitle) != "{}" ||
               JSON.stringify(isEditTask) != "{}") && (
-              <Button type="submit" className="max-w-20 px-2 py-1">
+              <Button
+                type="submit"
+                className="max-w-20 px-2 py-1 bg-blue-400 hover:bg-blue-500"
+              >
                 Save
               </Button>
             )}
@@ -215,7 +218,7 @@ const Board = () => {
               <Button
                 type="button"
                 onClick={handleDeleteBoard}
-                className="max-w-20 px-2 py-1"
+                className="max-w-20 px-2 py-1 bg-blue-400 hover:bg-blue-500"
               >
                 Delete
               </Button>

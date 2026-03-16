@@ -117,6 +117,21 @@ export const ColumnCard = ({
                       </div>
                     ) : (
                       <div>
+                        {card?.labels?.length > 0 && (
+                          <div className="px-2 py-1 bg-gray-50 rounded-lg text-xs flex flex-row flex-wrap gap-1 ">
+                            {card?.labels?.map((label, index) => {
+                              return (
+                                <div
+                                  key={index}
+                                  className="bg-blue-400 w-fit rounded-md px-1 text-white m-0.5"
+                                >
+                                  {label}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+
                         <div
                           onClick={() => {
                             showTaskModal(columnIndex, index);
@@ -131,7 +146,7 @@ export const ColumnCard = ({
                               },
                             }));
                           }}
-                          className="bg-gray-50 p-2 h-9 rounded-lg shadow-sm hover:border-[0.5px] hover:border-blue-300"
+                          className="bg-gray-50 p-2 min-h-9 rounded-lg shadow-sm hover:border-[0.5px] hover:border-blue-300 text-wrap wrap-anywhere"
                         >
                           {card.title}
                         </div>

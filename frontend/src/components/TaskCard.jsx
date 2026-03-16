@@ -32,7 +32,7 @@ export const TaskCard = ({
 
   return (
     <div className="absolute top-0 left-0 w-full h-full bg-black/30 flex justify-center ">
-      <div className="bg-white w-160 min-h-90 max-h-fit rounded-xl ">
+      <div className="bg-white w-160 min-h-90 max-h-fit rounded-xl my-4 mx-2">
         <div className="h-14 w-full border-b border-gray-300 px-4 py-2 flex flex-row gap-3 justify-between items-center">
           <div className="text-[18px] px-2 font-semibold text-gray-800">
             {board.columns[columnId].title}
@@ -107,7 +107,7 @@ export const TaskCard = ({
           </div>
         </div>
         <div className="mx-6 my-4 text-md font-semibold">
-          <p className="pb-3">Description</p>
+          <p className="pb-0.5">Description</p>
           <textarea
             className="text-md font-medium px-2 py-1 border focus:border-blue-400 bg-gray-50 focus:outline focus:outline-blue-400 rounded-md focus:bg-white w-full h-20 "
             placeholder="Add a more detailed description..."
