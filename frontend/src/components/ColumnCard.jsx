@@ -3,7 +3,6 @@ import { Input } from "./ui/Input";
 import { useFieldArray } from "react-hook-form";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 
-
 export const ColumnCard = ({
   register,
   isEdit,
@@ -11,7 +10,6 @@ export const ColumnCard = ({
   columnIndex,
   control,
   remove,
-  setIsEdit,
   isEditColumnTitle,
   setIsEditColumnTitle,
   isEditTask,
@@ -27,8 +25,6 @@ export const ColumnCard = ({
     name: `columns.${columnIndex}.cards`,
   });
 
-
-
   const setLastCardEdit = () => {
     const newIndex = fields.length;
     setIsEditTask((prev) => ({
@@ -40,10 +36,10 @@ export const ColumnCard = ({
     }));
   };
 
-  const showTaskModal = (columnIndex,index) => {
-    setOpenTaskModal({columnId:columnIndex,taskId:index});
+  const showTaskModal = (columnIndex, index) => {
+    setOpenTaskModal({ columnId: columnIndex, taskId: index });
   };
-  
+
   return (
     <div className="w-70 bg-gray-100 border border-gray-300 rounded-xl p-3 shrink-0 shadow-md hover:shadow-lg h-fit  hover:border-blue-300 focus-within:border-blue-300 ">
       <div className="flex justify-between items-center mb-3">
@@ -66,7 +62,7 @@ export const ColumnCard = ({
           </div>
         ) : (
           <h2
-            onDoubleClick={() => {
+            onClick={() => {
               setIsEditColumnTitle((prev) => ({
                 ...prev,
                 [columnIndex]: true,
@@ -122,7 +118,11 @@ export const ColumnCard = ({
                     ) : (
                       <div>
                         <div
-                          onDoubleClick={() => {
+                          onClick={() => {
+                            showTaskModal(columnIndex, index);
+                          }}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
                             setIsEditTask((prev) => ({
                               ...prev,
                               [columnIndex]: {
@@ -131,14 +131,10 @@ export const ColumnCard = ({
                               },
                             }));
                           }}
-                          onClick={() => {
-                            showTaskModal(columnIndex,index);
-                          }}
                           className="bg-gray-50 p-2 h-9 rounded-lg shadow-sm hover:border-[0.5px] hover:border-blue-300"
                         >
                           {card.title}
                         </div>
-                        
                       </div>
                     )}
                   </div>

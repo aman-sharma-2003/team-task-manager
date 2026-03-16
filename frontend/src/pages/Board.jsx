@@ -124,12 +124,14 @@ const Board = () => {
   };
 
   const submitted = (data) => {
+    console.log(data);
     if (id) {
       dispatch(updateBoard({ id, data }));
       setIsEdit(false);
       setIsEditBoardTitle(false);
       setIsEditColumnTitle({});
       setIsEditTask({});
+      setOpenTaskModal(null);
     }
 
     if (location.pathname === "/board/new" && isEdit) {
@@ -166,6 +168,8 @@ const Board = () => {
             setOpenTaskModal={setOpenTaskModal}
             board={board}
             register={register}
+            control={control}
+            getValues={getValues}
           />
         )}
         <div className="h-13 flex items-center justify-between px-2 sm:px-6 shadow">
@@ -180,7 +184,7 @@ const Board = () => {
             />
           ) : (
             <h1
-              onDoubleClick={() => {
+              onClick={() => {
                 setIsEditBoardTitle(true);
               }}
               className="text-lg font-semibold px-2 py-1 rounded-md cursor-pointer sm:ml-5 hover:bg-gray-200"
@@ -198,7 +202,6 @@ const Board = () => {
                 Save
               </Button>
             )}
-
             {/* {id && !isEdit && (
               <Button
                 type="button"
@@ -251,7 +254,6 @@ const Board = () => {
                             columnIndex={index}
                             control={control}
                             remove={remove}
-                            setIsEdit={setIsEdit}
                             isEditColumnTitle={isEditColumnTitle}
                             setIsEditColumnTitle={setIsEditColumnTitle}
                             isEditTask={isEditTask}
