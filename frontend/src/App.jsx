@@ -14,12 +14,11 @@ import { checkAuth } from "./features/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "./components/Navbar";
 import Board from "./pages/Board";
-// import { setLoading } from "./features/statusSlice";
+
 import { useLocation } from "react-router";
 
 const App = () => {
   const { loggedInUser } = useSelector((state) => state.auth);
-  // const { loading } = useSelector((state) => state.status);
   const dispatch = useDispatch();
   const location = useLocation();
   const { authChecked } = useSelector((state) => state.auth);
@@ -42,7 +41,7 @@ const App = () => {
   }
   return (
     <>
-      <div className="min-h-screen max-h-fit bg-linear-to-br from-gray-100 to-slate-300 select-none">
+      <div className="min-h-screen max-h-fit bg-white select-none">
         <Navbar />
         <Routes>
           <Route element={<AuthLayout />}>

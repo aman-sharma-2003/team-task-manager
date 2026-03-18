@@ -5,7 +5,6 @@ import { Button } from "./ui/Button";
 
 const Navbar = () => {
   const { loggedInUser } = useSelector((state) => state.auth);
-  const { loading } = useSelector((state) => state.status);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -14,37 +13,33 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex justify-between items-center px-4 sm:px-10  py-4 bg-gray-400 text-white">
-      <h2
-        className="text-xl hover:text-gray-300 font-bold cursor-pointer"
+    <div className="flex justify-between items-center px-4 sm:px-10  py-3 bg-[#473699] text-white">
+      <div
+        className="flex flex-row gap-2 items-center justify-center cursor-pointer"
         onClick={() => navigate("/home")}
+        title="Click to go to home and see My Boards"
       >
-        Team Task Manager
-      </h2>
+        <div>
+          <img className="size-7" src="/logo.png" alt="logo" />
+        </div>
+        <h2 className="text-[19px] hover:text-gray-300 font-bold">
+          Team Task Manager
+        </h2>
+      </div>
 
-      <div className="flex items-center gap-2 sm:gap-6">
+      <div className="flex items-center gap-2 sm:gap-4">
         {loggedInUser ? (
           <>
-            {/* <button
-              onClick={() => navigate("/booking-details")}
-              className="hover:text-gray-300 cursor-pointer w-32"
-            >
-              {loggedInUser?.role === "admin"
-                ? "Users Bookings"
-                : "My Bookings"}
-            </button> */}
-
-            <div className="flex items-center gap-2">
-              <div className="size-8 rounded-full bg-blue-500 flex items-center justify-center font-bold">
+            <div className="flex flex-row items-center gap-2">
+              <div className="size-6 rounded-full bg-[#de350b] flex items-center justify-center font-bold">
                 {loggedInUser?.name?.[0]?.toUpperCase()}
               </div>
-              <span className="hidden sm:block min-w-fit">
+              <span className="hidden text-[14px] sm:block min-w-fit">
                 {loggedInUser?.name}
               </span>
             </div>
             <Button
-              className="max-w-18 py-1 px-2"
-              isLoading={loading}
+              className="w-18 py-0.5 px-1 text-[15px] rounded-md"
               onClick={handleLogout}
             >
               Logout
@@ -52,7 +47,7 @@ const Navbar = () => {
           </>
         ) : (
           <Button
-            className="max-w-18 py-1 px-2"
+            className="w-18 py-0.5 px-1 text-[15px] rounded-md"
             onClick={() => navigate("/login")}
           >
             Login

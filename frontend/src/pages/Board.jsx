@@ -43,7 +43,8 @@ const Board = () => {
   useEffect(() => {
     if (location.pathname === "/board/new") {
       setIsEdit(true);
-      append({ title: "", cards: [{ title: "" }] });
+      append({ title: ""});
+      setIsEditColumnTitle({0:true});
     }
 
     if (id) {
@@ -172,11 +173,12 @@ const Board = () => {
             getValues={getValues}
           />
         )}
-        <div className="h-13 flex items-center justify-between px-2 sm:px-6 shadow">
+        <div className="h-12 flex items-center justify-between px-2 sm:px-6 shadow bg-linear-to-r from-[#544797] to-[#784e93] border-b border-t border-gray-500">
           {isEdit || isEditBoardTitle ? (
             <Input
               placeholder="Board Title"
-              className="text-lg font-semibold sm:ml-5 px-2 py-1 bg-gray-50 focus:outline focus:outline-blue-300 rounded-md focus:bg-white"
+              title="Enter the Board Title here"
+              className="text-lg font-semibold sm:ml-5 px-2 py-1 bg-gray-50 focus:outline focus:outline-blue-300 rounded-md focus:bg-white placeholder:font-medium placeholder:text-[17px]"
               {...register("boardTitle", {
                 required: true,
                 setValueAs: (v) => v.trim(),
@@ -187,45 +189,38 @@ const Board = () => {
               onClick={() => {
                 setIsEditBoardTitle(true);
               }}
-              className="text-lg font-semibold px-2 py-1 rounded-md cursor-pointer sm:ml-5 hover:bg-gray-200"
+              className="text-lg text-white font-semibold px-2 py-1 rounded-md cursor-pointer sm:ml-3 hover:bg-[#d2d2d2]/30"
             >
               {board?.title || "My Board"}
             </h1>
           )}
 
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-row gap-3 sm:mr-5">
             {(isEdit ||
               isEditBoardTitle ||
               JSON.stringify(isEditColumnTitle) != "{}" ||
               JSON.stringify(isEditTask) != "{}") && (
               <Button
                 type="submit"
-                className="max-w-20 px-2 py-1 bg-blue-400 hover:bg-blue-500"
+                title="Click to save the changes"
+                className="w-15 px-1 rounded-sm py-0 text-gray-600 hover:text-gray-700 font-medium bg-gray-300  hover:bg-gray-100"
               >
                 Save
               </Button>
             )}
-            {/* {id && !isEdit && (
-              <Button
-                type="button"
-                onClick={() => setIsEdit(true)}
-                className="max-w-20 px-2 py-1"
-              >
-                Edit
-              </Button>
-            )} */}
             {id && !isEdit && (
               <Button
                 type="button"
+                title="Click to delete the board"
                 onClick={handleDeleteBoard}
-                className="max-w-20 px-2 py-1 bg-blue-400 hover:bg-blue-500"
+                className="w-15 px-1 rounded-sm py-0 text-gray-600 hover:text-gray-700 font-medium bg-gray-300  hover:bg-gray-100"
               >
                 Delete
               </Button>
             )}
           </div>
         </div>
-        <div className="overflow-x-auto min-h-[calc(100vh-116px)]">
+        <div className="overflow-x-auto min-h-[calc(100vh-101px)] bg-linear-to-r from-[#765ec5] via-[#b16ac0] to-[#e173bb]">
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable
               droppableId="columns"
@@ -273,13 +268,15 @@ const Board = () => {
                   <div className="w-70 shrink-0">
                     <button
                       type="button"
+                      title="Click to add more column lists"
                       onClick={() => {
-                        append({ title: "", cards: [{ title: "" }] });
+                        append({ title: "" });
                         setLastColumnEdit();
                       }}
-                      className="w-70 h-15 rounded-xl border-2 cursor-pointer border-dashed border-gray-400 flex items-center justify-center text-gray-600 font-semibold hover:bg-gray-100 hover:shadow-xl"
+                      className="w-70 h-15 rounded-xl cursor-pointer border border-gray-400 shadow-md  flex items-center justify-center text-white font-semibold bg-[#bc8cd0] hover:bg-[#b27bca] hover:shadow-lg gap-2"
                     >
-                      + Add another list
+                      <img className="size-4" src="/plusWhite.png" alt="plus" />
+                      <p className="mt-1">Add another list</p>
                     </button>
                   </div>
                 </div>

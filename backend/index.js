@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./src/dataSources/db.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import boardRoutes from "./src/routes/boardRoutes.js";
+import labelRoutes from "./src/routes/labelRoutes.js"
 
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(authRoutes)
 app.use(boardRoutes)
+app.use(labelRoutes)
 
 
 connectDB();
